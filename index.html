@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio — Informatics Engineering Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F0E8; --paper-2:#EAE5D9; --card:#F8F6F0; --ink:#16150F; --ink-2:#3A3830;
+  --muted:#77736A; --line:rgba(22,21,15,.12); --line-2:rgba(22,21,15,.22);
+  --accent:#C4461C; --accent-soft:rgba(196,70,28,.10);
+  --serif:"Instrument Serif", Georgia, serif;
+  --sans:"Geist", system-ui, -apple-system, sans-serif;
+  --mono:"Geist Mono", ui-monospace, monospace;
+  --max:1240px; --gut:clamp(20px,4vw,56px);
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+[data-theme="dark"]{
+  --paper:#11110F; --paper-2:#1A1916; --card:#171613; --ink:#ECE8DD; --ink-2:#C9C4B8;
+  --muted:#8F8A7F; --line:rgba(236,232,221,.10); --line-2:rgba(236,232,221,.20);
+  --accent:#E2683F; --accent-soft:rgba(226,104,63,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
+  font-weight:400;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--accent);color:var(--paper)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+.mono{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--muted)}
+.ph{background:var(--accent-soft);color:var(--accent);border-radius:3px;padding:0 .2em;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone}
+h1 .ph,h3 .ph,h4 .ph,h5 .ph,.lede .ph,.big .ph,.mail .ph,.mark .ph,.yr .ph{background:none;padding:0}
+body.no-hints .ph{background:none;color:inherit;padding:0}
+
+/* progress + nav */
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:60}
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;line-height:1}
+.mark i{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font-style:normal;font-size:15px}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{font-size:13.5px;color:var(--ink-2);position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-3px;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.pill{height:36px;padding:0 16px;border-radius:99px;border:1px solid var(--line-2);font-size:13px;display:inline-flex;align-items:center;gap:8px;transition:background .25s,color .25s,border-color .25s}
+.pill:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:background .25s}
+.icon-btn:hover{background:var(--paper-2)}
+@media (max-width:860px){.nav-links{display:none}}
+
+/* index overlay */
+.index{position:fixed;inset:0;z-index:70;background:var(--paper);display:flex;flex-direction:column;
+  clip-path:inset(0 0 100% 0);transition:clip-path .7s var(--ease);overflow:auto}
+.index.open{clip-path:inset(0 0 0 0)}
+.index-top{display:flex;justify-content:space-between;align-items:center;height:64px}
+.index-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;padding:5vh 0 8vh}
+.index-grid a{display:flex;align-items:baseline;gap:18px;padding:14px 0;border-bottom:1px solid var(--line);
+  font-family:var(--serif);font-size:clamp(24px,3vw,38px);line-height:1.1;transition:color .2s,padding .4s var(--ease)}
+.index-grid a span{font-family:var(--mono);font-size:11px;color:var(--muted);width:24px;flex:none}
+.index-grid a:hover{color:var(--accent);padding-left:10px}
+@media (max-width:720px){.index-grid{grid-template-columns:1fr}}
+
+/* hero — centered portrait */
+.hero{padding-top:110px;padding-bottom:60px;position:relative;text-align:center;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);animation:pulse 2.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}
+.stage{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(16px,3vw,48px)}
+.side{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:10px}
+.side.l{align-items:flex-end;text-align:right}.side.r{align-items:flex-start;text-align:left}
+.side b{font-family:var(--serif);font-weight:400;font-size:clamp(20px,2vw,28px);letter-spacing:0;text-transform:none;color:var(--ink);line-height:1.1}
+.face-wrap{position:relative;width:clamp(260px,40vw,480px);aspect-ratio:1;margin:0 auto}
+.face{position:absolute;inset:9%;border-radius:50%;overflow:hidden;background:var(--paper-2);cursor:zoom-in;
+  box-shadow:0 40px 80px -40px rgba(22,21,15,.45);transition:transform 1s var(--ease)}
+.face img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform 1.4s var(--ease)}
+.face-wrap:hover .face img{transform:scale(1.07)}
+.ring{position:absolute;inset:0;animation:spin 38s linear infinite}
+.ring text{font-family:var(--mono);font-size:4.3px;letter-spacing:.12em;text-transform:uppercase;fill:var(--ink-2)}
+.ring-line{position:absolute;inset:6%;border-radius:50%;border:1px solid var(--line-2)}
+.badge-float{position:absolute;right:4%;bottom:12%;background:var(--accent);color:#fff;border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(196,70,28,.6);display:flex;align-items:center;gap:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(50px,7.2vw,116px);line-height:.92;letter-spacing:-.02em;margin-top:clamp(18px,3vw,34px)}
+.hero h1 em{color:var(--accent)}
+.hero-intro{max-width:620px;margin:22px auto 0;font-size:clamp(16px,1.4vw,18.5px);color:var(--ink-2);line-height:1.55}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;justify-content:center}
+.btn{height:46px;padding:0 22px;border-radius:99px;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:500;transition:transform .3s var(--ease),background .25s,color .25s}
+.btn-solid{background:var(--ink);color:var(--paper)}
+.btn-solid:hover{background:var(--accent)}
+.btn-line{border:1px solid var(--line-2)}
+.btn-line:hover{background:var(--paper-2)}
+.btn .arr{transition:transform .3s var(--ease)}
+.btn:hover .arr{transform:translateX(3px)}
+.hero-meta{display:grid;grid-template-columns:repeat(4,1fr);margin-top:60px;border-top:1px solid var(--line);text-align:left}
+.hero-meta div{padding:18px 18px 0 0}
+.hero-meta div+div{padding-left:18px;border-left:1px solid var(--line)}
+.hero-meta b{display:block;font-weight:500;font-size:15px;margin-top:6px}
+.scroll-cue{margin-top:40px;display:flex;justify-content:center}
+.scroll-cue span{width:1px;height:46px;background:linear-gradient(var(--line-2),transparent);position:relative;overflow:hidden}
+.scroll-cue span::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--accent);animation:cue 2.2s var(--ease) infinite}
+@keyframes cue{to{top:100%}}
+@media (max-width:860px){.stage{grid-template-columns:1fr}.side{display:none}.hero-meta{grid-template-columns:1fr 1fr}.hero-meta div:nth-child(3){padding-left:0;border-left:0}}
+
+/* generated cover (when no image) */
+.gen{background:var(--paper-2);display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,3vw,34px);text-align:left;position:relative}
+.gen .g-num{font-family:var(--serif);font-size:clamp(70px,10vw,160px);line-height:.8;color:var(--accent);opacity:.9}
+.gen .g-title{font-family:var(--serif);font-size:clamp(22px,2.6vw,40px);line-height:1;color:var(--ink);max-width:80%}
+.gen .g-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.gen::after{content:"";position:absolute;right:-12%;top:-30%;width:60%;aspect-ratio:1;border-radius:50%;border:1px solid var(--line-2)}
+.gen::before{content:"";position:absolute;right:2%;top:-14%;width:36%;aspect-ratio:1;border-radius:50%;border:1px solid var(--line)}
+.proj:hover .gen .g-num{transform:translateY(-4px)}
+.gen .g-num{transition:transform .6s var(--ease)}
+
+/* media placeholder */
+.media{background:var(--paper-2);position:relative;overflow:hidden;width:100%;height:100%}
+.media img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.media.empty{background-image:repeating-linear-gradient(135deg,transparent 0 11px,var(--line) 11px 12px);display:grid;place-items:center}
+.media.empty span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper);padding:5px 9px;border-radius:99px;border:1px solid var(--line)}
+
+/* contents strip */
+.toc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:20px}
+.toc-inner{display:grid;grid-template-columns:repeat(8,1fr)}
+.toc a{padding:16px 12px 16px 0;font-size:12.5px;color:var(--muted);display:flex;gap:8px;transition:color .2s;border-bottom:1px solid var(--line)}
+.toc a:nth-last-child(-n+8){border-bottom:0}
+.toc a:hover{color:var(--ink)}
+.toc a span{font-family:var(--mono);font-size:10.5px;padding-top:2px}
+@media (max-width:1000px){.toc-inner{grid-template-columns:repeat(4,1fr)}.toc a:nth-last-child(-n+8){border-bottom:1px solid var(--line)}.toc a:nth-last-child(-n+4){border-bottom:0}}
+@media (max-width:560px){.toc-inner{grid-template-columns:repeat(2,1fr)}.toc a:nth-last-child(-n+4){border-bottom:1px solid var(--line)}.toc a:nth-last-child(-n+2){border-bottom:0}}
+
+/* sections */
+.sec{padding-top:clamp(80px,10vw,130px);scroll-margin-top:40px}
+.sec-grid{display:grid;grid-template-columns:230px 1fr;gap:clamp(24px,4vw,60px)}
+.sec-label{position:sticky;top:96px;align-self:start}
+.sec-label .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.06em}
+.sec-label h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.02;margin-top:10px;letter-spacing:-.01em}
+.sec-label p{font-size:13.5px;color:var(--muted);margin-top:12px;max-width:210px;line-height:1.5}
+.sec-label .count{margin-top:16px}
+@media (max-width:860px){.sec-grid{grid-template-columns:1fr}.sec-label{position:static}.sec-label p{max-width:none}}
+.chapter{padding:clamp(100px,12vw,160px) 0 0}
+.chapter .wrap{display:flex;align-items:baseline;gap:24px;border-bottom:1px solid var(--line);padding-bottom:18px}
+.chapter h3{font-family:var(--serif);font-weight:400;font-style:italic;font-size:clamp(40px,6vw,80px);line-height:1}
+.chapter .mono{margin-left:auto}
+
+/* about */
+.lede{font-family:var(--serif);font-size:clamp(28px,3.2vw,44px);line-height:1.12;letter-spacing:-.01em}
+.prose p{color:var(--ink-2);margin-top:18px;max-width:660px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);margin-top:44px;border-top:1px solid var(--line)}
+.facts div{padding:16px 16px 16px 0;border-bottom:1px solid var(--line)}
+.facts b{display:block;font-weight:500;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;padding:6px 13px;border:1px solid var(--line-2);border-radius:99px;color:var(--ink-2);transition:all .2s}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.sm{font-size:12px;padding:3px 10px}
+@media (max-width:640px){.facts{grid-template-columns:1fr 1fr}}
+
+/* rows (education, experience, etc.) */
+.rows{border-top:1px solid var(--line)}
+.row{border-bottom:1px solid var(--line)}
+.row-head{display:grid;grid-template-columns:150px 1fr auto;gap:24px;padding:26px 0;align-items:baseline;width:100%;text-align:left;cursor:pointer}
+.row-head .when{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.row-head h4{font-family:var(--serif);font-weight:400;font-size:clamp(23px,2.2vw,29px);line-height:1.12;transition:color .2s}
+.row-head .sub{font-size:14px;color:var(--muted);margin-top:6px}
+.row-head:hover h4{color:var(--accent)}
+.plus{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);position:relative;flex:none;transition:transform .5s var(--ease),background .2s}
+.plus::before,.plus::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:1px;background:currentColor;transform:translate(-50%,-50%)}
+.plus::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .4s var(--ease)}
+.row.open .plus{transform:rotate(180deg);background:var(--ink);color:var(--paper)}
+.row.open .plus::after{transform:translate(-50%,-50%) rotate(0)}
+.row-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--ease)}
+.row.open .row-body{grid-template-rows:1fr}
+.row-body>div{overflow:hidden}
+.row-inner{padding:0 0 30px 174px;display:grid;gap:18px;max-width:900px}
+.row-inner p{color:var(--ink-2)}
+.ticks{list-style:none;display:grid;gap:8px}
+.ticks li{position:relative;padding-left:22px;color:var(--ink-2)}
+.ticks li::before{content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:var(--accent)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.thumbs .t{aspect-ratio:4/3;border-radius:3px;overflow:hidden;cursor:zoom-in}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.lnk{display:inline-flex;align-items:center;gap:7px;font-size:13px;padding:7px 14px;border-radius:99px;background:var(--paper-2);transition:background .2s,color .2s}
+.lnk:hover{background:var(--ink);color:var(--paper)}
+.kv{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px;color:var(--muted)}
+.kv b{color:var(--ink);font-weight:500}
+@media (max-width:700px){.row-head{grid-template-columns:1fr auto;gap:6px 16px}.row-head .when{grid-column:1/-1}.row-inner{padding-left:0}}
+
+/* skills */
+.skill-groups{border-top:1px solid var(--line)}
+.sg{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+.sg h5{font-weight:500;font-size:15px}
+.sg .chip small{color:var(--muted);margin-left:6px;font-size:11px}
+@media (max-width:640px){.sg{grid-template-columns:1fr;gap:12px}}
+.lang-filter{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap}
+.lang-filter button{font-size:12.5px;padding:6px 14px;border-radius:99px;border:1px solid var(--line-2);transition:all .2s}
+.lang-filter button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.lang{background:var(--paper);padding:22px;min-height:150px;display:flex;flex-direction:column;transition:background .3s}
+.lang:hover{background:var(--card)}
+.lang h5{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.05;margin-top:10px}
+.lang .note{font-size:13px;color:var(--muted);margin-top:8px}
+.meter{display:flex;gap:4px;margin-top:auto;padding-top:18px}
+.meter i{flex:1;height:3px;border-radius:2px;background:var(--line-2)}
+.meter i.on{background:var(--accent)}
+
+/* projects */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:56px 32px}
+.proj{display:block;cursor:pointer}
+.proj.feat{grid-column:1/-1}
+.proj .cover{aspect-ratio:4/3;border-radius:4px;overflow:hidden}
+.proj.feat .cover{aspect-ratio:16/8}
+.proj:hover .media img{transform:scale(1.035)}
+.proj-meta{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+.proj h4{font-family:var(--serif);font-weight:400;font-size:clamp(26px,2.4vw,34px);line-height:1.08;margin-top:8px;display:flex;justify-content:space-between;gap:16px}
+.proj.feat h4{font-size:clamp(32px,3.4vw,48px)}
+.proj h4 .arr{font-family:var(--sans);font-size:20px;transition:transform .4s var(--ease);flex:none}
+.proj:hover h4 .arr{transform:translate(4px,-4px);color:var(--accent)}
+.proj p{color:var(--muted);font-size:14.5px;margin-top:10px;max-width:560px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.proj .chips{margin-top:14px}
+@media (max-width:760px){.proj-grid{grid-template-columns:1fr}.proj.feat .cover{aspect-ratio:4/3}}
+
+/* achievements */
+.ach{display:grid;grid-template-columns:110px 1fr auto;gap:24px;padding:28px 0;border-bottom:1px solid var(--line);align-items:start;cursor:pointer}
+.ach .yr{font-family:var(--serif);font-size:44px;line-height:.9;color:var(--muted);transition:color .3s}
+.ach:hover .yr{color:var(--accent)}
+.ach h4{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.12}
+.ach p{color:var(--muted);font-size:14.5px;margin-top:6px}
+.badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
+@media (max-width:640px){.ach{grid-template-columns:70px 1fr}.ach .yr{font-size:32px}.ach .badge{grid-column:2;justify-self:start}}
+
+/* certs */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.cert{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;transition:transform .5s var(--ease),border-color .3s}
+.cert:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.cert .media{aspect-ratio:1.414/1;height:auto;cursor:zoom-in}
+.cert-body{padding:18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cert h5{font-weight:500;font-size:15.5px;line-height:1.35}
+.cert .foot{margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line)}
+.cert .foot a{font-size:12.5px;color:var(--accent)}
+
+/* creative */
+.masonry{columns:3 260px;column-gap:20px}
+.cw{break-inside:avoid;margin-bottom:28px;cursor:pointer;display:block}
+.cw .media{border-radius:4px}
+.cw:nth-child(3n+1) .media{aspect-ratio:4/5}
+.cw:nth-child(3n+2) .media{aspect-ratio:1/1}
+.cw:nth-child(3n) .media{aspect-ratio:3/4}
+.cw:hover .media img{transform:scale(1.04)}
+.cw h5{font-family:var(--serif);font-weight:400;font-size:23px;margin-top:12px;line-height:1.1}
+
+/* leadership */
+.soft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+.soft{background:var(--paper);padding:26px;transition:background .3s}
+.soft:hover{background:var(--card)}
+.soft h5{font-family:var(--serif);font-weight:400;font-size:26px;margin:14px 0 8px;line-height:1.1}
+.soft p{font-size:14px;color:var(--ink-2)}
+.soft .ev{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-2)}
+
+/* contact */
+.contact{padding:clamp(110px,14vw,180px) 0 40px;margin-top:clamp(80px,10vw,130px);background:var(--ink);color:var(--paper)}
+[data-theme="dark"] .contact{background:var(--paper-2);color:var(--ink)}
+.contact .big{font-family:var(--serif);font-size:clamp(60px,11vw,170px);line-height:.88;letter-spacing:-.02em}
+.contact .big em{color:var(--accent)}
+.mailrow{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:44px}
+.mail{font-family:var(--serif);font-size:clamp(24px,3vw,40px);border-bottom:1px solid currentColor;line-height:1.2}
+.mail:hover{color:var(--accent)}
+.contact .pill{border-color:color-mix(in srgb,currentColor 30%,transparent)}
+.contact .pill:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.socials{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-top:80px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
+.socials a{display:flex;justify-content:space-between;padding:20px 20px 20px 0;border-bottom:1px solid color-mix(in srgb,currentColor 18%,transparent);transition:padding .4s var(--ease),color .2s}
+.socials a:hover{padding-left:10px;color:var(--accent)}
+.socials small{opacity:.55;font-size:13px}
+.footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:90px;opacity:.6}
+
+/* empty */
+.empty-note{padding:34px;border:1px dashed var(--line-2);border-radius:6px;color:var(--muted);font-size:14px;text-align:center}
+
+/* detail page */
+.detail{position:fixed;inset:0;z-index:80;background:var(--paper);overflow-y:auto;transform:translateY(100%);transition:transform .75s var(--ease);visibility:hidden}
+.detail.open{transform:none;visibility:visible}
+.detail-bar{position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.detail-bar .wrap{height:64px;display:flex;align-items:center;justify-content:space-between}
+.d-head{padding:70px 0 40px}
+.d-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,7.5vw,108px);line-height:.95;letter-spacing:-.02em;margin-top:18px;max-width:1050px}
+.d-head .subt{font-size:clamp(17px,1.6vw,21px);color:var(--ink-2);margin-top:22px;max-width:700px}
+.d-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border-top:1px solid var(--line);margin-top:44px}
+.d-meta div{padding:16px 16px 16px 0;border-bottom:1px solid var(--line)}
+.d-meta b{display:block;font-weight:500;margin-top:4px;font-size:14.5px}
+.d-cover{aspect-ratio:16/8;border-radius:4px;overflow:hidden;cursor:zoom-in}
+.d-body{display:grid;grid-template-columns:230px 1fr;gap:clamp(24px,4vw,60px);padding:70px 0}
+.d-body h6{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400;position:sticky;top:90px}
+.d-block{display:contents}
+.d-content{display:grid;gap:18px;font-size:17px;color:var(--ink-2);max-width:720px}
+.d-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.d-gallery figure .media{aspect-ratio:4/3;border-radius:3px;cursor:zoom-in}
+.d-gallery figcaption{font-size:12.5px;color:var(--muted);margin-top:8px}
+.d-next{border-top:1px solid var(--line);padding:50px 0 80px;display:flex;justify-content:space-between;gap:20px}
+.d-next a{font-family:var(--serif);font-size:clamp(24px,3vw,38px);line-height:1.1}
+.d-next a:hover{color:var(--accent)}
+@media (max-width:760px){.d-body{grid-template-columns:1fr;gap:12px 0}.d-body h6{position:static;margin-top:26px}.d-gallery{grid-template-columns:1fr}.d-cover{aspect-ratio:4/3}}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(10,10,8,.92);display:none;place-items:center;padding:5vw;cursor:zoom-out}
+.lb.open{display:grid}
+.lb img{max-height:86vh;max-width:100%;border-radius:3px}
+.lb p{color:#ddd;font-size:13px;margin-top:12px;text-align:center}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="mark"><i id="monogram">—</i><span id="navName"></span></a>
+    <nav class="nav-links">
+      <a href="#about">About</a>
+      <a href="#academic-projects">Work</a>
+      <a href="#work-experience">Experience</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Ganti tema">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+      </button>
+      <button class="pill" id="indexBtn">Index <span class="mono" style="font-size:10px" id="idxCount"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="index" id="index">
+  <div class="wrap">
+    <div class="index-top"><span class="mark"><i>—</i>Index</span><button class="pill" id="indexClose">Close ✕</button></div>
+    <div class="index-grid" id="indexGrid"></div>
+  </div>
+</div>
+
+<main id="top">
+  <section class="hero wrap" id="profile"></section>
+  <div class="wrap"><div class="toc"><div class="toc-inner" id="toc"></div></div></div>
+  <div id="sections"></div>
+</main>
+
+<section class="contact" id="contact"></section>
+
+<article class="detail" id="detail" aria-hidden="true"></article>
+<div class="lb" id="lb"><div><img id="lbImg" alt=""><p id="lbCap"></p></div></div>
+
+<script>
+/* =====================================================================
+   PORTFOLIO DATA — EDIT EVERYTHING HERE
+   ---------------------------------------------------------------------
+   • Text inside [square brackets] is a placeholder: it shows up
+     highlighted so you can spot what is still unfilled. Replace it.
+   • Every list ( [ ... ] ) accepts unlimited entries. To add one,
+     copy an existing { ... } block, paste it, and change the values.
+   • Every entry needs a unique "id" (letters, numbers, hyphens).
+   • Images: put a file path ("img/project-1.jpg") or a data: URI.
+     Leave "" to show a neat placeholder frame.
+   • Empty lists [] show an "add entries" note, or are hidden entirely
+     if SETTINGS.hideEmptySections is true.
+   ===================================================================== */
+
+const SETTINGS = {
+  showPlaceholderHints: true,   // true = highlight [placeholders] & show empty sections. Set false before sharing publicly.
+  hideEmptySections: false,     // force-hide sections with no entries even while hints are on
+  lastUpdated: "November 2026"
+};
+
+const PORTFOLIO = {
+
+  /* 1 — PERSONAL PROFILE & INTRODUCTION */
+  profile: {
+    firstName: "Naswa Nabila",
+    lastName: "Rahman",
+    initials: "NR",
+    role: "Informatics Engineering Student",
+    headline: ["Mahasiswa Teknik Informatika", "Web and Mobile Developer", "Content Creator"],
+    tagline: "Mahasiswa Teknik Informatika di Universitas Esa Unggul yang membangun aplikasi web dan mobile — sekaligus aktif di organisasi, kepanitiaan, dan produksi konten digital.",
+    location: "Jakarta, Indonesia",
+    university: "Universitas Esa Unggul",
+    focus: "Web · Android · Konten Digital",
+    availability: "",                // e.g. "Open to internship" — hidden when empty
+    photo: "assets/naswa.jpg",
+    cvUrl: "",                       // e.g. "files/CV-Naswa.pdf" — button hidden when empty
+  },
+
+  /* 2 — ABOUT ME */
+  about: {
+    lede: "Mahasiswa aktif Teknik Informatika Universitas Esa Unggul, lulusan SMK jurusan Rekayasa Perangkat Lunak.",
+    paragraphs: [
+      "Berpengalaman membangun aplikasi web berbasis PHP dan sedang mengembangkan aplikasi Android.",
+      "Aktif di organisasi, kepanitiaan, dan produksi konten digital, serta terbiasa berbicara di depan publik, bekerja dalam tim, dan beradaptasi cepat."
+    ],
+    facts: [
+      { label: "Based in", value: "Jakarta, Indonesia" },
+      { label: "Studying", value: "S1 Teknik Informatika, 2024 — sekarang" },
+      { label: "Background", value: "SMK Rekayasa Perangkat Lunak" },
+      { label: "Building", value: "Web (PHP) & Android" },
+      { label: "Creating", value: "Konten media sosial" },
+      { label: "Email", value: "nasxxtra99@gmail.com" }
+    ],
+    interests: ["Web Development", "Android Development", "Content Creation", "Public Speaking"]
+  },
+
+  /* 3 — EDUCATION HISTORY */
+  education: [
+    {
+      id: "edu-esa-unggul",
+      institution: "Universitas Esa Unggul",
+      degree: "S1 Teknik Informatika",
+      period: "2024 — Sekarang",
+      location: "Bekasi",
+      gpa: "",
+      summary: "",
+      highlights: [],
+      links: []
+    },
+    {
+      id: "edu-smkn71",
+      institution: "SMKN 71 Jakarta",
+      degree: "Rekayasa Perangkat Lunak (RPL)",
+      period: "Lulus 2024",
+      location: "Jakarta",
+      gpa: "",
+      summary: "",
+      highlights: ["Tugas Akhir: Website Rumah Sakit berbasis PHP", "Praktik Kerja Lapangan di KPP Pratama Pulo Gadung"],
+      links: []
+    }
+  ],
+
+  /* 4 — TECHNICAL SKILLS & TOOLS */
+  skills: [
+    { group: "Web Development",    items: [{ name: "PHP" }, { name: "Pengembangan Web" }, { name: "CRUD & Sistem Login" }, { name: "Multi-Role Access" }] },
+    { group: "Mobile Development", items: [{ name: "Aplikasi Android" }, { name: "Android Studio" }] },
+    { group: "Tools",              items: [{ name: "VS Code" }, { name: "Android Studio" }] },
+    { group: "Creative & Communication", items: [{ name: "Content Creation" }, { name: "Public Speaking" }, { name: "MC" }] }
+  ],
+
+  /* 5 — PROGRAMMING LANGUAGES & FRAMEWORKS
+     level: 0–5 (0 = no meter shown) */
+  stack: [
+    { name: "PHP", category: "Language", level: 0, note: "ServiceHub, Website Rumah Sakit" },
+    { name: "[Bahasa / Framework]", category: "Language", level: 0, note: "[Contoh: bahasa yang dipakai untuk aplikasi Android]" },
+    { name: "[Database]", category: "Database", level: 0, note: "" }
+  ],
+
+  /* 6 — ACADEMIC PROJECTS */
+  academicProjects: [
+    {
+      id: "servicehub",
+      featured: true,
+      title: "ServiceHub",
+      subtitle: "Sistem Layanan Kampus — website berbasis PHP",
+      year: "[20XX]",
+      course: "Proyek Kelompok Kuliah",
+      role: "[Peranmu di tim]",
+      team: "Kelompok",
+      tags: ["Web", "PHP", "Multi-role"],
+      stack: ["PHP", "VS Code"],
+      cover: "",
+      summary: "Website sistem layanan kampus berbasis PHP untuk peminjaman sarana, penitipan barang, dan pelaporan barang rusak.",
+      overview: ["Website sistem layanan kampus berbasis PHP yang dibuat dengan VS Code sebagai proyek kelompok kuliah."],
+      problem: "",
+      solution: "",
+      results: [
+        "Fitur peminjaman sarana dan prasarana serta barang kampus",
+        "Fitur penitipan barang di kampus",
+        "Fitur pelaporan barang kampus yang rusak",
+        "Dilengkapi CRUD, login, dan hak akses beberapa role pengguna"
+      ],
+      gallery: [],
+      links: [{ label: "[GitHub]", url: "" }],
+      documents: []
+    },
+    {
+      id: "android-arsitek",
+      title: "Aplikasi Android Arsitek",
+      subtitle: "Aplikasi mobile untuk kebutuhan arsitek",
+      year: "Sedang dikerjakan",
+      course: "Proyek Akhir Kelompok",
+      role: "[Peranmu di tim]",
+      team: "Kelompok",
+      tags: ["Mobile", "Android", "In progress"],
+      stack: ["Android Studio"],
+      cover: "",
+      summary: "Aplikasi mobile untuk kebutuhan arsitek yang dikembangkan menggunakan Android Studio.",
+      overview: ["Aplikasi mobile untuk kebutuhan arsitek yang dikembangkan menggunakan Android Studio. Proyek akhir kelompok ini sedang dalam pengerjaan."],
+      problem: "", solution: "", results: [], gallery: [], links: [], documents: []
+    },
+    {
+      id: "website-rumah-sakit",
+      title: "Website Rumah Sakit",
+      subtitle: "Tugas Akhir SMK",
+      year: "SMK",
+      course: "Tugas Akhir SMK",
+      role: "Developer",
+      team: "Individu",
+      tags: ["Web", "PHP", "CRUD"],
+      stack: ["PHP"],
+      cover: "",
+      summary: "Website rumah sakit berbasis PHP yang dibuat secara individu, lengkap dengan CRUD dan login multi-role.",
+      overview: ["Website rumah sakit berbasis PHP yang dibuat secara individu sebagai Tugas Akhir SMK."],
+      problem: "", solution: "",
+      results: ["Fitur lengkap dengan CRUD dan login multi-role"],
+      gallery: [], links: [], documents: []
+    }
+  ],
+
+  /* 7 — PERSONAL PROJECTS (same fields as academic projects) */
+  personalProjects: [],
+
+  /* 8 — WORK & INTERNSHIP */
+  work: [
+    {
+      id: "pkl-kpp-pulo-gadung",
+      role: "Praktik Kerja Lapangan (PKL)",
+      org: "KPP Pratama Pulo Gadung",
+      type: "Internship · semasa SMK",
+      period: "[Periode PKL]",
+      location: "Jakarta",
+      summary: "[Tuliskan tugas dan tanggung jawabmu selama PKL.]",
+      details: [],
+      skills: [], media: [], links: []
+    }
+  ],
+
+  /* 9 — ORGANIZATIONAL EXPERIENCE */
+  organizations: [
+    {
+      id: "youth-ranger",
+      role: "Divisi Kreatif — Content Creator",
+      org: "Youth Ranger Indonesia",
+      type: "Organisasi",
+      period: "Sekarang",
+      location: "",
+      summary: "Membuat dan mengembangkan konten kreatif untuk media sosial organisasi.",
+      details: ["Berkolaborasi dengan tim kreatif dalam merancang ide dan materi publikasi kegiatan."],
+      skills: ["Content Creation", "Teamwork"], media: [], links: []
+    },
+    {
+      id: "duta-kampus",
+      role: "Duta Kampus",
+      org: "Universitas Esa Unggul",
+      type: "Duta kampus",
+      period: "Periode berakhir 2025",
+      location: "",
+      summary: "Mewakili kampus dalam kegiatan promosi dan acara resmi.",
+      details: [
+        "Menjadi MC dan pembicara di beberapa kegiatan kampus",
+        "Membuat konten promosi kreatif untuk media sosial universitas"
+      ],
+      skills: ["Public Speaking", "MC", "Content Creation"], media: [], links: []
+    },
+    {
+      id: "bem-esa-unggul",
+      role: "Anggota",
+      org: "Badan Eksekutif Mahasiswa (BEM) Universitas Esa Unggul",
+      type: "Organisasi kampus",
+      period: "2025",
+      location: "",
+      summary: "Membuat konten kampanye sosial dan publikasi kegiatan, serta menjadi MC.",
+      details: [],
+      skills: ["Content Creation", "MC"], media: [], links: []
+    }
+  ],
+
+  /* 10 — COMMITTEE & EVENT EXPERIENCE */
+  committees: [
+    {
+      id: "coding-unity-2025",
+      role: "Divisi Penilai",
+      org: "Panitia Coding Unity 2025",
+      type: "Lomba coding",
+      period: "2025",
+      location: "",
+      summary: "Menilai hasil karya peserta lomba coding bersama tim teknis.",
+      details: ["Mengarahkan dan mendampingi peserta selama jalannya lomba."],
+      skills: ["Event Management", "Teamwork"], media: [], links: []
+    }
+  ],
+
+  /* 11 — ACHIEVEMENTS & AWARDS */
+  achievements: [
+    {
+      id: "award-duta-kampus",
+      title: "Duta Kampus Universitas Esa Unggul",
+      issuer: "Universitas Esa Unggul",
+      year: "2025",
+      level: "Kampus",
+      summary: "Terpilih mewakili kampus dalam kegiatan promosi dan acara resmi (periode berakhir 2025).",
+      overview: [],
+      image: "",
+      gallery: [], links: [], documents: []
+    }
+  ],
+
+  /* 12 — CERTIFICATIONS & COURSES */
+  certifications: [],
+
+  /* 13 — VOLUNTEER & COMMUNITY */
+  volunteer: [
+    {
+      id: "forpodis",
+      role: "Liaison Officer (LO) VIP",
+      org: "FORPODIS — “Satu Hati Satu Semangat”",
+      type: "Volunteer",
+      period: "[Tahun]",
+      location: "",
+      summary: "Bertugas sebagai LO VIP dan membantu kelancaran acara bagi peserta disabilitas.",
+      details: [],
+      skills: ["Komunikasi", "Event Management"], media: [], links: []
+    }
+  ],
+
+  /* 14 — CREATIVE WORK & CONTENT CREATION
+     Add posts, videos, designs you made (e.g. for Youth Ranger, Duta Kampus, BEM). */
+  creative: [],
+
+  /* 15 — LEADERSHIP & SOFT SKILLS */
+  leadership: {
+    statement: "Terbiasa berbicara di depan publik, bekerja dalam tim, dan beradaptasi cepat.",
+    softSkills: [
+      { name: "Public Speaking",  description: "Menjadi MC dan pembicara di kegiatan kampus.", evidence: "Duta Kampus Universitas Esa Unggul" },
+      { name: "MC",               description: "Membawakan acara kampus dan kegiatan organisasi.", evidence: "Duta Kampus · BEM Universitas Esa Unggul" },
+      { name: "Content Creation", description: "Membuat konten kreatif, promosi, dan kampanye sosial untuk media sosial.", evidence: "Youth Ranger Indonesia · Duta Kampus · BEM" },
+      { name: "Event Management", description: "Terlibat dalam penyelenggaraan lomba dan acara.", evidence: "Panitia Coding Unity 2025 · FORPODIS" },
+      { name: "Teamwork",         description: "Mengerjakan proyek dan materi publikasi bersama tim.", evidence: "ServiceHub · Aplikasi Android Arsitek · Tim kreatif Youth Ranger" },
+      { name: "Komunikasi",       description: "Mendampingi tamu dan peserta selama acara berlangsung.", evidence: "LO VIP FORPODIS · Pendamping peserta Coding Unity" }
+    ]
+  },
+
+  /* 16 — CONTACT & SOCIAL MEDIA */
+  contact: {
+    headline: "Let’s build something",
+    email: "nasxxtra99@gmail.com",
+    phone: "0821-1305-9743",
+    socials: [
+      { label: "Instagram", handle: "@naswanr",       url: "https://instagram.com/naswanr" },
+      { label: "LinkedIn",  handle: "[/in/username]", url: "" },
+      { label: "GitHub",    handle: "[@username]",    url: "" }
+    ]
+  }
+};
+
+/* =====================================================================
+   RENDERING — you normally don't need to edit below this line
+   ===================================================================== */
+const SECTIONS = [
+  ["profile","Profile"],["about","About Me"],["education","Education"],["skills","Skills & Tools"],
+  ["stack","Languages & Frameworks"],["academic-projects","Academic Projects"],["personal-projects","Personal Projects"],
+  ["work-experience","Work & Internship"],["organizations","Organizations"],["committees","Committees & Events"],
+  ["achievements","Achievements"],["certifications","Certifications"],["volunteer","Volunteer & Community"],
+  ["creative","Creative Work"],["leadership","Leadership & Soft Skills"],["contact","Contact"]
+];
+const P = PORTFOLIO;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const t = s => esc(s).replace(/\[([^\]]+)\]/g, '<span class="ph">[$1]</span>');
+const has = v => Array.isArray(v) ? v.length > 0 : !!(v && String(v).trim());
+const pad = n => String(n).padStart(2,"0");
+const HINTS = SETTINGS.showPlaceholderHints;
+const isPh = s => /\[[^\]]+\]/.test(String(s ?? ""));
+const DATA_OF = { education:P.education, skills:P.skills, stack:P.stack, "academic-projects":P.academicProjects,
+  "personal-projects":P.personalProjects, "work-experience":P.work, organizations:P.organizations, committees:P.committees,
+  achievements:P.achievements, certifications:P.certifications, volunteer:P.volunteer, creative:P.creative };
+const visible = id => !(id in DATA_OF) || has(DATA_OF[id]) || (HINTS && !SETTINGS.hideEmptySections);
+const VIS = SECTIONS.filter(s => visible(s[0]));
+const num = id => pad(VIS.findIndex(s => s[0] === id) + 1);
+const media = (src, label="Add image", attrs="") => has(src)
+  ? `<div class="media" ${attrs}><img src="${esc(src)}" alt="" loading="lazy"></div>`
+  : `<div class="media empty" ${attrs}><span>${esc(label)}</span></div>`;
+const linkBtns = (arr, icon="↗") => (arr||[]).filter(l => has(l.label) && (HINTS || has(l.url))).map(l =>
+  has(l.url) ? `<a class="lnk" href="${esc(l.url)}" target="_blank" rel="noopener">${t(l.label)} <span>${icon}</span></a>`
+             : `<span class="lnk" title="Tambahkan url">${t(l.label)} <span class="ph">url</span></span>`).join("");
+const chips = (arr, cls="chip sm") => (arr||[]).filter(has).map(c => `<span class="${cls}">${t(c)}</span>`).join("");
+
+/* registry of everything that can open as a detail page */
+const REG = {};
+const register = (list, kind, sectionId) => (list||[]).forEach(e => REG[e.id] = { e, kind, sectionId, list });
+
+function sectionShell(id, title, desc, inner, count){
+  return `<section class="sec wrap" id="${id}">
+    <div class="sec-grid">
+      <div class="sec-label rv"><div class="num">${num(id)} /</div><h2>${title}</h2>${desc?`<p>${desc}</p>`:""}
+      ${count!=null?`<div class="count mono muted">${pad(count)} ${count===1?"entry":"entries"}</div>`:""}</div>
+      <div class="rv">${inner}</div>
+    </div></section>`;
+}
+const emptyNote = what => `<div class="empty-note">Belum ada ${what}. Tambahkan entri di blok data <code>PORTFOLIO</code>.</div>`;
+const skip = arr => !has(arr) && (SETTINGS.hideEmptySections || !HINTS);
+/* typographic cover used when a project has no image */
+const genCover = (p, i) => `<div class="media gen"><span class="g-num">${pad(i+1)}</span>
+  <div class="g-row"><span class="mono muted">${t(p.course||p.type||"")}</span><span class="mono muted">${(p.stack||p.tags||[]).filter(x=>!isPh(x)).slice(0,3).map(esc).join(" · ")}</span></div></div>`;
+
+function renderHero(){
+  const p = P.profile;
+  document.getElementById("navName").innerHTML = t(p.firstName);
+  document.getElementById("monogram").innerHTML = esc(String(p.initials).replace(/[\[\]]/g,"").slice(0,2)) || "—";
+  const ringText = (p.headline||[p.role]).join(" ✦ ") + " ✦ ";
+  const reps = ringText.length < 45 ? 2 : 1;
+  document.getElementById("profile").innerHTML = `
+    ${has(p.availability)?`<div class="eyebrow rv"><span class="dot"></span><span class="mono">${t(p.availability)}</span></div>`:
+      `<div class="eyebrow rv"><span class="mono muted">Portfolio — ${new Date().getFullYear()}</span></div>`}
+    <div class="stage">
+      <div class="side l rv"><span>Based in</span><b>${t(p.location)}</b><span style="margin-top:14px">Studying at</span><b>${t(p.university)}</b></div>
+      <div class="face-wrap rv">
+        <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="circ" d="M50,50 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+          <text><textPath href="#circ" textLength="288">${esc(ringText.repeat(reps))}</textPath></text></svg>
+        <div class="ring-line"></div>
+        <div class="face" ${has(p.photo)?`data-lb="${esc(p.photo)}" data-cap="${esc(p.firstName+" "+p.lastName)}"`:""}>
+          ${has(p.photo)?`<img src="${esc(p.photo)}" alt="${esc(p.firstName+" "+p.lastName)}">`:`<div class="media empty"><span>Portrait photo</span></div>`}</div>
+        <span class="badge-float">✦ ${esc((p.headline||[])[1]||p.role)}</span>
+      </div>
+      <div class="side r rv"><span>Building</span><b>Web &amp; Android</b><span style="margin-top:14px">Also</span><b>${esc((p.headline||[])[2]||"")}</b></div>
+    </div>
+    <h1 class="rv">${t(p.firstName)} <em>${t(p.lastName)}</em></h1>
+    <p class="hero-intro rv">${t(p.tagline)}</p>
+    <div class="hero-cta rv">
+      <a class="btn btn-solid" href="#academic-projects">View work <span class="arr">→</span></a>
+      <a class="btn btn-line" href="#contact">Get in touch</a>
+      ${has(p.cvUrl)?`<a class="btn btn-line" href="${esc(p.cvUrl)}" target="_blank" rel="noopener">Download CV ↓</a>`:""}
+    </div>
+    <div class="scroll-cue"><span></span></div>`;
+}
+
+function renderNav(){
+  document.getElementById("idxCount").textContent = pad(VIS.length);
+  const items = VIS.map(([id,name],i)=>`<a href="#${id}" data-close><span>${pad(i+1)}</span>${name}</a>`).join("");
+  document.getElementById("indexGrid").innerHTML = items;
+  document.getElementById("toc").innerHTML = VIS.map(([id,name],i)=>`<a href="#${id}"><span>${pad(i+1)}</span>${name}</a>`).join("");
+}
+
+function renderAbout(){
+  const a = P.about;
+  return sectionShell("about","About Me","The person behind the work.",`
+    <p class="lede">${t(a.lede)}</p>
+    <div class="prose">${a.paragraphs.filter(has).map(x=>`<p>${t(x)}</p>`).join("")}</div>
+    <div class="facts">${a.facts.map(f=>`<div><span class="mono muted">${t(f.label)}</span><b>${t(f.value)}</b></div>`).join("")}</div>
+    ${has(a.interests)?`<div class="chips" style="margin-top:28px">${chips(a.interests,"chip")}</div>`:""}`);
+}
+
+function rowItem(e, opts={}){
+  const title = opts.title(e), sub = opts.sub(e);
+  const body = [
+    has(e.summary)?`<p>${t(e.summary)}</p>`:"",
+    opts.kv ? opts.kv(e) : "",
+    has(e.details||e.highlights)?`<ul class="ticks">${(e.details||e.highlights).filter(has).map(d=>`<li>${t(d)}</li>`).join("")}</ul>`:"",
+    has(e.skills)?`<div class="chips">${chips(e.skills)}</div>`:"",
+    has(e.media)?`<div class="thumbs">${e.media.map(m=>`<div class="t" ${has(m.src)?`data-lb="${esc(m.src)}" data-cap="${esc(m.caption||"")}"`:""}>${media(m.src,"Image")}</div>`).join("")}</div>`:"",
+    `<div class="links">${linkBtns(e.links)}${opts.detail!==false?`<a class="lnk" href="#d-${esc(e.id)}">Open full page →</a>`:""}</div>`
+  ].join("");
+  return `<div class="row"><button class="row-head" aria-expanded="false">
+      <span class="when">${t(e.period)}</span>
+      <span><h4>${title}</h4><div class="sub">${sub}</div></span>
+      <span class="plus"></span></button>
+    <div class="row-body"><div><div class="row-inner">${body}</div></div></div></div>`;
+}
+
+function renderEducation(){
+  if (skip(P.education)) return "";
+  return sectionShell("education","Education","Formal learning and academic foundation.",
+    has(P.education)?`<div class="rows">${P.education.map(e=>rowItem(e,{
+      title:e=>t(e.institution), sub:e=>[t(e.degree),t(e.location)].filter(has).join(" · "),
+      kv:e=>has(e.gpa)?`<div class="kv"><span>GPA <b>${t(e.gpa)}</b></span></div>`:"", detail:false
+    })).join("")}</div>`:emptyNote("riwayat pendidikan"), P.education.length);
+}
+
+function renderSkills(){
+  if (skip(P.skills)) return "";
+  return sectionShell("skills","Skills & Tools","Capabilities across engineering, design and collaboration.",
+    has(P.skills)?`<div class="skill-groups">${P.skills.map(g=>`<div class="sg"><h5>${t(g.group)}</h5>
+      <div class="chips">${g.items.map(i=>`<span class="chip">${t(i.name)}${has(i.note)?`<small>${t(i.note)}</small>`:""}</span>`).join("")}</div></div>`).join("")}</div>`
+      :emptyNote("skill"));
+}
+
+function renderStack(){
+  if (skip(P.stack)) return "";
+  const cats = ["All", ...new Set(P.stack.map(s=>s.category).filter(has))];
+  const cards = P.stack.map(s=>`<div class="lang" data-cat="${esc(s.category)}">
+      <span class="mono muted">${t(s.category)}</span><h5>${t(s.name)}</h5>
+      ${has(s.note)?`<div class="note">${t(s.note)}</div>`:""}
+      ${s.level>0?`<div class="meter" title="${s.level}/5">${[1,2,3,4,5].map(i=>`<i class="${i<=s.level?"on":""}"></i>`).join("")}</div>`:""}
+    </div>`).join("");
+  return sectionShell("stack","Languages & Frameworks","The languages, frameworks and databases I build with.",
+    has(P.stack)?`<div class="lang-filter">${cats.map((c,i)=>`<button class="${i?"":"on"}" data-f="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+      <div class="lang-grid" id="langGrid">${cards}</div>`:emptyNote("bahasa atau framework"), P.stack.length);
+}
+
+function projCard(p, i){
+  return `<a class="proj ${p.featured?"feat":""}" href="#d-${esc(p.id)}">
+    <div class="cover">${has(p.cover)?media(p.cover):genCover(p,i)}</div>
+    <div class="proj-meta"><span class="mono muted">${t(p.year)}${has(p.course)?` · ${t(p.course)}`:""}</span><span class="mono muted">${t(p.role)}</span></div>
+    <h4><span>${t(p.title)}</span><span class="arr">↗</span></h4>
+    ${has(p.summary)?`<p>${t(p.summary)}</p>`:""}
+    ${has(p.tags)?`<div class="chips">${chips(p.tags)}</div>`:""}
+  </a>`;
+}
+function renderProjects(list,id,title,desc){
+  if (skip(list)) return "";
+  return sectionShell(id,title,desc, has(list)?`<div class="proj-grid">${list.map(projCard).join("")}</div>`:emptyNote("proyek"), list.length);
+}
+
+function renderRows(list,id,title,desc){
+  if (skip(list)) return "";
+  return sectionShell(id,title,desc, has(list)?`<div class="rows">${list.map(e=>rowItem(e,{
+    title:e=>t(e.role), sub:e=>[t(e.org),t(e.type),t(e.location)].filter(has).join(" · ")
+  })).join("")}</div>`:emptyNote("entri"), list.length);
+}
+
+function renderAchievements(){
+  const L = P.achievements; if (skip(L)) return "";
+  return sectionShell("achievements","Achievements & Awards","Recognition earned along the way.",
+    has(L)?`<div class="rows">${L.map(a=>`<a class="ach" href="#d-${esc(a.id)}">
+      <span class="yr">${t(a.year)}</span>
+      <span><h4>${t(a.title)}</h4><p>${[t(a.issuer),t(a.summary)].filter(has).join(" — ")}</p></span>
+      ${has(a.level)?`<span class="badge">${t(a.level)}</span>`:"<span></span>"}</a>`).join("")}</div>`:emptyNote("pencapaian"), L.length);
+}
+
+function renderCerts(){
+  const L = P.certifications; if (skip(L)) return "";
+  return sectionShell("certifications","Certifications & Courses","Continuous learning, verified.",
+    has(L)?`<div class="cert-grid">${L.map(c=>`<div class="cert">
+      ${has(c.image)?media(c.image,"",`data-lb="${esc(c.image)}" data-cap="${esc(c.title)}"`):media("","Certificate image")}
+      <div class="cert-body"><span class="mono muted">${t(c.issuer)}</span><h5>${t(c.title)}</h5>
+        ${has(c.skills)?`<div class="chips" style="margin-top:6px">${chips(c.skills)}</div>`:""}
+        <div class="foot"><span class="mono muted">${t(c.issued)}</span>
+        ${has(c.url)?`<a href="${esc(c.url)}" target="_blank" rel="noopener">Credential ↗</a>`:`<span class="mono muted">${has(c.credentialId)?"ID "+t(c.credentialId):""}</span>`}</div>
+      </div></div>`).join("")}</div>`:emptyNote("sertifikat"), L.length);
+}
+
+function renderCreative(){
+  const L = P.creative; if (skip(L)) return "";
+  return sectionShell("creative","Creative Work","Design, content, writing and everything made with intent.",
+    has(L)?`<div class="masonry">${L.map(c=>`<a class="cw" href="#d-${esc(c.id)}">${media(c.cover,"Artwork")}
+      <div class="proj-meta" style="margin-top:12px"><span class="mono muted">${t(c.type)}</span><span class="mono muted">${t(c.year)}</span></div>
+      <h5>${t(c.title)}</h5></a>`).join("")}</div>`:emptyNote("karya kreatif"), L.length);
+}
+
+function renderLeadership(){
+  const L = P.leadership;
+  return sectionShell("leadership","Leadership & Soft Skills","How I work with people.",`
+    <p class="lede">“${t(L.statement)}”</p>
+    <div class="soft-grid">${L.softSkills.map((s,i)=>`<div class="soft"><span class="mono" style="color:var(--accent)">${pad(i+1)}</span>
+      <h5>${t(s.name)}</h5><p>${t(s.description)}</p>${has(s.evidence)?`<div class="ev">${t(s.evidence)}</div>`:""}</div>`).join("")}</div>`);
+}
+
+function renderContact(){
+  const c = P.contact, p = P.profile;
+  document.getElementById("contact").innerHTML = `<div class="wrap">
+    <div class="mono" style="color:var(--accent)">${num("contact")} / Contact</div>
+    <div class="big rv" style="margin-top:22px">${esc(c.headline)}<br><em>together.</em></div>
+    <div class="mailrow rv"><span class="mail">${t(c.email)}</span>
+      <button class="pill" id="copyMail">Copy email</button>
+      ${has(c.phone)?`<span class="pill">${t(c.phone)}</span>`:""}</div>
+    <div class="socials">${c.socials.filter(s=>HINTS||has(s.url)).map(s=>`<a ${has(s.url)?`href="${esc(s.url)}" target="_blank" rel="noopener"`:""}>
+      <span>${t(s.label)}<br><small>${t(s.handle)}</small></span><span>↗</span></a>`).join("")}</div>
+    <div class="footer mono"><span>© ${new Date().getFullYear()} ${t(p.firstName)} ${t(p.lastName)}</span><span>Last updated ${t(SETTINGS.lastUpdated)}</span><a href="#top">Back to top ↑</a></div>
+  </div>`;
+}
+
+function chapter(title, n){ return `<div class="chapter"><div class="wrap rv"><span class="mono muted">Part ${n}</span><h3>${title}</h3></div></div>`; }
+
+function renderAll(){
+  document.body.classList.toggle("no-hints", !SETTINGS.showPlaceholderHints);
+  register(P.academicProjects,"Academic Project","academic-projects");
+  register(P.personalProjects,"Personal Project","personal-projects");
+  register(P.work,"Work & Internship","work-experience");
+  register(P.organizations,"Organization","organizations");
+  register(P.committees,"Committee & Event","committees");
+  register(P.volunteer,"Volunteer","volunteer");
+  register(P.achievements,"Achievement","achievements");
+  register(P.creative,"Creative Work","creative");
+
+  renderNav(); renderHero();
+  document.getElementById("sections").innerHTML = [
+    renderAbout(), renderEducation(),
+    chapter("Capabilities","I"), renderSkills(), renderStack(),
+    chapter("Selected work","II"),
+    renderProjects(P.academicProjects,"academic-projects","Academic Projects","Coursework, research and academic assignments."),
+    renderProjects(P.personalProjects,"personal-projects","Personal Projects","Things I build because I want to."),
+    chapter("Experience","III"),
+    renderRows(P.work,"work-experience","Work & Internship","Professional experience in the field."),
+    renderRows(P.organizations,"organizations","Organizational Experience","Roles held in student and professional organizations."),
+    renderRows(P.committees,"committees","Committee & Events","Events I helped plan and run."),
+    chapter("Recognition","IV"), renderAchievements(), renderCerts(),
+    chapter("Beyond the code","V"),
+    renderRows(P.volunteer,"volunteer","Volunteer & Community","Giving back to the communities around me."),
+    renderCreative(), renderLeadership()
+  ].join("");
+  renderContact();
+}
+
+/* ---------- detail page ---------- */
+const detail = document.getElementById("detail");
+function block(label, html){ return html ? `<h6>${label}</h6><div class="d-content">${html}</div>` : ""; }
+function openDetail(id){
+  const r = REG[id]; if (!r) return closeDetail();
+  const e = r.e, idx = r.list.indexOf(e), next = r.list[(idx+1)%r.list.length];
+  const title = e.title || e.role, subtitle = e.subtitle || (e.org ? [e.org,e.type].filter(has).join(" · ") : e.summary);
+  const meta = [["Year",e.year],["Period",e.period],["Course",e.course],["Role",e.title?e.role:""],["Organization",e.title?"":e.org],
+    ["Team",e.team],["Issuer",e.issuer],["Level",e.level],["Type",e.type],["Location",e.location]].filter(m=>has(m[1]));
+  const cover = e.cover ?? e.image;
+  const gallery = (e.gallery||e.media||[]);
+  const body = [
+    block("Overview", (has(e.overview)?e.overview:[e.summary]).filter(has).map(x=>`<p>${t(x)}</p>`).join("")),
+    block("Problem", has(e.problem)?`<p>${t(e.problem)}</p>`:""),
+    block("Approach", has(e.solution)?`<p>${t(e.solution)}</p>`:""),
+    block("Outcomes", has(e.results||e.details)?`<ul class="ticks">${(e.results&&e.results.length?e.results:e.details||[]).filter(has).map(x=>`<li>${t(x)}</li>`).join("")}</ul>`:""),
+    block("Stack & skills", has(e.stack||e.skills)?`<div class="chips">${chips([...(e.stack||[]),...(e.skills||[])],"chip")}</div>`:""),
+    block("Gallery", has(gallery)?`<div class="d-gallery">${gallery.map(g=>`<figure><div ${has(g.src)?`data-lb="${esc(g.src)}" data-cap="${esc(g.caption||"")}"`:""}>${media(g.src,"Screenshot")}</div>${has(g.caption)?`<figcaption>${t(g.caption)}</figcaption>`:""}</figure>`).join("")}</div>`:""),
+    block("Links & documents", has(e.links)||has(e.documents)?`<div class="links">${linkBtns(e.links)}${linkBtns(e.documents,"↓")}</div>`:"")
+  ].join("");
+  detail.innerHTML = `
+    <div class="detail-bar"><div class="wrap"><a href="#${r.sectionId}" class="pill">← Back</a>
+      <span class="mono muted">${esc(r.kind)} · ${pad(idx+1)} / ${pad(r.list.length)}</span></div></div>
+    <div class="wrap">
+      <div class="d-head"><span class="mono" style="color:var(--accent)">${esc(r.kind)}</span>
+        <h1>${t(title)}</h1>${has(subtitle)?`<p class="subt">${t(subtitle)}</p>`:""}
+        ${has(e.tags)?`<div class="chips" style="margin-top:22px">${chips(e.tags,"chip")}</div>`:""}
+        ${meta.length?`<div class="d-meta">${meta.map(m=>`<div><span class="mono muted">${m[0]}</span><b>${t(m[1])}</b></div>`).join("")}</div>`:""}
+      </div>
+      ${has(cover)?`<div class="d-cover" data-lb="${esc(cover)}">${media(cover)}</div>`:(e.cover!==undefined?`<div class="d-cover" style="cursor:default">${genCover(e,idx)}</div>`:"")}
+      <div class="d-body">${body}</div>
+      ${r.list.length>1?`<div class="d-next"><span class="mono muted">Next</span><a href="#d-${esc(next.id)}">${t(next.title||next.role)} →</a></div>`:""}
+    </div>`;
+  detail.classList.add("open"); detail.setAttribute("aria-hidden","false");
+  detail.scrollTop = 0; document.body.style.overflow = "hidden";
+}
+function closeDetail(){
+  detail.classList.remove("open"); detail.setAttribute("aria-hidden","true"); document.body.style.overflow = "";
+}
+function route(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h.startsWith("d-")) openDetail(h.slice(2));
+  else if (detail.classList.contains("open")) {
+    closeDetail();
+    const el = h && document.getElementById(h);
+    if (el) requestAnimationFrame(()=>el.scrollIntoView({behavior:"instant"}));
+  }
+}
+
+/* ---------- interactions ---------- */
+renderAll();
+
+document.addEventListener("click", ev => {
+  const head = ev.target.closest(".row-head");
+  if (head){ const row = head.parentElement; row.classList.toggle("open"); head.setAttribute("aria-expanded", row.classList.contains("open")); return; }
+  const lb = ev.target.closest("[data-lb]");
+  if (lb){ document.getElementById("lbImg").src = lb.dataset.lb; document.getElementById("lbCap").textContent = lb.dataset.cap||""; document.getElementById("lb").classList.add("open"); return; }
+  const f = ev.target.closest("[data-f]");
+  if (f){ document.querySelectorAll("[data-f]").forEach(b=>b.classList.toggle("on",b===f));
+    document.querySelectorAll("#langGrid .lang").forEach(c=>c.style.display = (f.dataset.f==="All"||c.dataset.cat===f.dataset.f)?"":"none"); return; }
+  if (ev.target.closest("[data-close]")) document.getElementById("index").classList.remove("open");
+  if (ev.target.id === "copyMail"){
+    const b = ev.target;
+    navigator.clipboard?.writeText(P.contact.email).then(()=>{b.textContent="Copied ✓";setTimeout(()=>b.textContent="Copy email",1800)}).catch(()=>{b.textContent=P.contact.email});
+  }
+});
+document.getElementById("lb").addEventListener("click", e => e.currentTarget.classList.remove("open"));
+document.getElementById("indexBtn").onclick = () => document.getElementById("index").classList.add("open");
+document.getElementById("indexClose").onclick = () => document.getElementById("index").classList.remove("open");
+document.addEventListener("keydown", e => { if (e.key==="Escape"){ document.getElementById("lb").classList.remove("open"); document.getElementById("index").classList.remove("open");
+  if (detail.classList.contains("open")) location.hash = REG[location.hash.slice(3)]?.sectionId || "top"; }});
+
+const root = document.documentElement;
+try { const s = localStorage.getItem("pf-theme"); if (s) root.dataset.theme = s; } catch(e){}
+document.getElementById("themeBtn").onclick = () => {
+  root.dataset.theme = root.dataset.theme==="dark" ? "light" : "dark";
+  try { localStorage.setItem("pf-theme", root.dataset.theme); } catch(e){}
+};
+
+const nav = document.getElementById("nav"), bar = document.getElementById("progress");
+addEventListener("scroll", () => {
+  nav.classList.toggle("scrolled", scrollY > 20);
+  const max = document.documentElement.scrollHeight - innerHeight;
+  bar.style.width = (max>0 ? scrollY/max*100 : 0) + "%";
+}, {passive:true});
+
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {rootMargin:"0px 0px -8% 0px"});
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+addEventListener("hashchange", route); route();
+</script>
+</body>
+</html>
