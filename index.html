@@ -150,6 +150,26 @@ body.no-hints .ph{background:none;color:inherit;padding:0}
 .chapter h3{font-family:var(--serif);font-weight:400;font-style:italic;font-size:clamp(40px,6vw,80px);line-height:1}
 .chapter .mono{margin-left:auto}
 
+/* at a glance */
+.glance{padding-top:clamp(70px,8vw,110px);scroll-margin-top:70px}
+.glance-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.gl{display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--line-2);transition:transform .35s var(--ease),box-shadow .35s}
+.gl:hover{transform:translateY(-4px);box-shadow:0 22px 40px -26px rgba(0,0,0,.45)}
+.gl .pic{aspect-ratio:4/3;position:relative;overflow:hidden}
+.gl .pic .media{position:absolute;inset:0}
+.gl:hover .pic img{transform:scale(1.05)}
+.gl .cnt{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.62);color:#fff;font-size:11px;padding:3px 8px;border-radius:99px}
+.gl .gen .g-num{font-size:64px}.gl .gen .g-row{display:none}
+.gl-body{padding:12px 14px 15px;display:grid;gap:3px}
+.gl .cat{font-size:11.5px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.gl h5{font-size:15px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gl p{font-size:13px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:1100px){.glance-grid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:820px){.glance-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.glance-grid{grid-template-columns:repeat(2,1fr);gap:10px}.gl-body{padding:10px 11px 12px}.gl h5{font-size:14px}}
+.exp-more{font-size:14px;font-weight:600;color:var(--accent);margin-top:4px}
+.exp-more:hover{text-decoration:underline}
+
 /* stacked section header (replaces side column) */
 .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--line-2);padding-bottom:20px;margin-bottom:40px}
 .sec-head .num{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:500}
@@ -378,6 +398,7 @@ body.no-hints .ph{background:none;color:inherit;padding:0}
 
 <main id="top">
   <section class="hero wrap" id="profile"></section>
+  <section class="glance wrap" id="glance"></section>
   <div class="wrap"><div class="toc"><div class="toc-inner" id="toc"></div></div></div>
   <div id="sections"></div>
 </main>
@@ -499,7 +520,7 @@ const PORTFOLIO = {
       team: "Kelompok",
       tags: ["Web", "PHP", "Multi-role"],
       stack: ["PHP", "VS Code"],
-      cover: "",
+      cover: "assets/dummy/servicehub.jpg",
       summary: "Website sistem layanan kampus berbasis PHP untuk peminjaman sarana, penitipan barang, dan pelaporan barang rusak.",
       overview: ["Website sistem layanan kampus berbasis PHP yang dibuat dengan VS Code sebagai proyek kelompok kuliah."],
       problem: "",
@@ -524,7 +545,7 @@ const PORTFOLIO = {
       team: "Kelompok",
       tags: ["Mobile", "Android", "In progress"],
       stack: ["Android Studio"],
-      cover: "",
+      cover: "assets/dummy/android-arsitek.jpg",
       summary: "Aplikasi mobile untuk kebutuhan arsitek yang dikembangkan menggunakan Android Studio.",
       overview: ["Aplikasi mobile untuk kebutuhan arsitek yang dikembangkan menggunakan Android Studio. Proyek akhir kelompok ini sedang dalam pengerjaan."],
       problem: "", solution: "", results: [], gallery: [], links: [], documents: []
@@ -539,7 +560,7 @@ const PORTFOLIO = {
       team: "Individu",
       tags: ["Web", "PHP", "CRUD"],
       stack: ["PHP"],
-      cover: "",
+      cover: "assets/dummy/rumah-sakit.jpg",
       summary: "Website rumah sakit berbasis PHP yang dibuat secara individu, lengkap dengan CRUD dan login multi-role.",
       overview: ["Website rumah sakit berbasis PHP yang dibuat secara individu sebagai Tugas Akhir SMK."],
       problem: "", solution: "",
@@ -631,7 +652,7 @@ const PORTFOLIO = {
       level: "Kampus",
       summary: "Terpilih mewakili kampus dalam kegiatan promosi dan acara resmi (periode berakhir 2025).",
       overview: [],
-      image: "",
+      image: "assets/dummy/duta-kampus-1.jpg",
       gallery: [], links: [], documents: []
     }
   ],
@@ -688,7 +709,7 @@ const PORTFOLIO = {
    RENDERING — you normally don't need to edit below this line
    ===================================================================== */
 const SECTIONS = [
-  ["profile","Profile"],["about","About Me"],["education","Education"],["skills","Skills & Tools"],
+  ["profile","Profile"],["glance","At a Glance"],["about","About Me"],["education","Education"],["skills","Skills & Tools"],
   ["stack","Languages & Frameworks"],["academic-projects","Academic Projects"],["personal-projects","Personal Projects"],
   ["work-experience","Work & Internship"],["organizations","Organizations"],["committees","Committees & Events"],
   ["achievements","Achievements"],["certifications","Certifications"],["volunteer","Volunteer & Community"],
@@ -769,6 +790,23 @@ function renderNav(){
   document.getElementById("toc").innerHTML = VIS.map(([id,name],i)=>`<a href="#${id}"><span>${pad(i+1)}</span>${name}</a>`).join("");
 }
 
+const firstPhoto = e => e.cover || e.image || ((e.media||e.gallery||[]).find(m=>has(m.src))||{}).src || "";
+const photoCount = e => (e.media||e.gallery||[]).filter(m=>has(m.src)).length;
+function renderGlance(){
+  const groups = [[P.academicProjects,"Proyek"],[P.personalProjects,"Proyek"],[P.work,"Internship"],[P.organizations,"Organisasi"],
+    [P.committees,"Kepanitiaan"],[P.volunteer,"Volunteer"],[P.achievements,"Prestasi"],[P.creative,"Karya"]];
+  let i = 0;
+  const cards = groups.flatMap(([list,cat]) => (list||[]).map(e => {
+    const isExp = !e.title, img = firstPhoto(e), n = photoCount(e);
+    const title = isExp ? e.org : e.title, desc = isExp ? e.role : (e.summary || e.subtitle);
+    return `<a class="gl" href="#d-${esc(e.id)}"><div class="pic">${has(img)?media(img):genCover(e,i++)}${n>1?`<span class="cnt">${n} foto</span>`:""}</div>
+      <div class="gl-body"><span class="cat">${cat}</span><h5>${t(title)}</h5>${has(desc)?`<p>${t(desc)}</p>`:""}</div></a>`;
+  })).join("");
+  document.getElementById("glance").innerHTML = `
+    <div class="sec-head rv"><div><div class="num">${num("glance")}</div><h2>At a Glance</h2></div><p>Semua yang pernah aku kerjakan. Klik kartu untuk melihat foto dan detailnya.</p></div>
+    <div class="glance-grid rv">${cards}</div>`;
+}
+
 function renderAbout(){
   const a = P.about;
   return sectionShell("about","About Me","The person behind the work.",`
@@ -796,6 +834,7 @@ function expCard(e, title, org, meta){
     ${has(e.gpa)?`<div class="kv"><span>GPA <b>${t(e.gpa)}</b></span></div>`:""}
     ${has(e.skills)?`<div class="chips">${chips(e.skills)}</div>`:""}
     ${has(e.links)?`<div class="links">${linkBtns(e.links)}</div>`:""}
+    ${REG[e.id]?`<a class="exp-more" href="#d-${esc(e.id)}">Lihat semua foto & detail →</a>`:""}
   </div></article>`;
 }
 
@@ -909,7 +948,7 @@ function renderAll(){
   register(P.achievements,"Achievement","achievements");
   register(P.creative,"Creative Work","creative");
 
-  renderNav(); renderHero();
+  renderNav(); renderHero(); renderGlance();
   document.getElementById("sections").innerHTML = [
     renderAbout(), renderEducation(), renderSkills(), renderStack(),
     renderProjects(P.academicProjects,"academic-projects","Academic Projects","Coursework, research and academic assignments."),
@@ -932,7 +971,7 @@ function openDetail(id){
   const title = e.title || e.role, subtitle = e.subtitle || (e.org ? [e.org,e.type].filter(has).join(" · ") : e.summary);
   const meta = [["Year",e.year],["Period",e.period],["Course",e.course],["Role",e.title?e.role:""],["Organization",e.title?"":e.org],
     ["Team",e.team],["Issuer",e.issuer],["Level",e.level],["Type",e.type],["Location",e.location]].filter(m=>has(m[1]));
-  const cover = e.cover ?? e.image;
+  const cover = firstPhoto(e);
   const gallery = (e.gallery||e.media||[]);
   const body = [
     block("Overview", (has(e.overview)?e.overview:[e.summary]).filter(has).map(x=>`<p>${t(x)}</p>`).join("")),
@@ -952,7 +991,7 @@ function openDetail(id){
         ${has(e.tags)?`<div class="chips" style="margin-top:22px">${chips(e.tags,"chip")}</div>`:""}
         ${meta.length?`<div class="d-meta">${meta.map(m=>`<div><span class="mono muted">${m[0]}</span><b>${t(m[1])}</b></div>`).join("")}</div>`:""}
       </div>
-      ${has(cover)?`<div class="d-cover" data-lb="${esc(cover)}">${media(cover)}</div>`:(e.cover!==undefined?`<div class="d-cover" style="cursor:default">${genCover(e,idx)}</div>`:"")}
+      ${has(cover)?`<div class="d-cover" data-lb="${esc(cover)}">${media(cover)}</div>`:(e.title?`<div class="d-cover" style="cursor:default">${genCover(e,idx)}</div>`:"")}
       <div class="d-body">${body}</div>
       ${r.list.length>1?`<div class="d-next"><span class="mono muted">Next</span><a href="#d-${esc(next.id)}">${t(next.title||next.role)} →</a></div>`:""}
     </div>`;
