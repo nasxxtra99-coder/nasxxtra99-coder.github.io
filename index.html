@@ -72,7 +72,7 @@ body.no-hints .ph{background:none;color:inherit;padding:0}
 /* hero — centered portrait */
 .hero{padding-top:110px;padding-bottom:60px;position:relative;text-align:center;min-height:100svh;display:flex;flex-direction:column;justify-content:center}
 .eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);animation:pulse 2.6s infinite}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);}
 @keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}
 .stage{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(16px,3vw,48px)}
 .side{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:10px}
@@ -82,8 +82,8 @@ body.no-hints .ph{background:none;color:inherit;padding:0}
 .face{position:absolute;inset:9%;border-radius:50%;overflow:hidden;background:var(--paper-2);cursor:zoom-in;
   box-shadow:0 40px 80px -40px rgba(22,21,15,.45);transition:transform 1s var(--ease)}
 .face img{width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform 1.4s var(--ease)}
-.face-wrap:hover .face img{transform:scale(1.07)}
-.ring{position:absolute;inset:0;animation:spin 38s linear infinite}
+
+.ring{position:absolute;inset:0}
 .ring text{font-family:var(--mono);font-size:4.3px;letter-spacing:.12em;text-transform:uppercase;fill:var(--ink-2)}
 .ring-line{position:absolute;inset:6%;border-radius:50%;border:1px solid var(--line-2)}
 .badge-float{position:absolute;right:4%;bottom:12%;background:var(--accent);color:#fff;border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:500;
@@ -313,7 +313,7 @@ body.no-hints .ph{background:none;color:inherit;padding:0}
 .lb p{color:#ddd;font-size:13px;margin-top:12px;text-align:center}
 
 /* reveal */
-.rv{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv{opacity:0;transition:opacity .6s ease}
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
 </style>
@@ -732,7 +732,7 @@ function renderHero(){
       <a class="btn btn-line" href="#contact">Get in touch</a>
       ${has(p.cvUrl)?`<a class="btn btn-line" href="${esc(p.cvUrl)}" target="_blank" rel="noopener">Download CV ↓</a>`:""}
     </div>
-    <div class="scroll-cue"><span></span></div>`;
+    `;
 }
 
 function renderNav(){
